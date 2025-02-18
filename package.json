@@ -17,6 +17,7 @@
     "migration:create": "yarn typeorm -d ./ormconfig.ts migration:create ./src/migrations",
     "migration:generate": "yarn typeorm -d ./ormconfig.ts migration:generate ./src/migrations",
     "migration:revert": "yarn typeorm -d ./ormconfig.ts migration:revert",
+    "typeorm:run-migrations": "yarn typeorm -d ./ormconfig.ts migration:run",
     "seed": "ts-node ./node_modules/@jorgebodega/typeorm-seeding/dist/cli.js seed -d ormconfig.ts src/seeder/**/*.ts",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",

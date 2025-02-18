@@ -15,11 +15,29 @@ async function bootstrap() {
     .setTitle('Zurich API')
     .setDescription('API for zurich assessment')
     .setVersion('1.0')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'JWT',
+        description: 'Enter JWT token',
+        in: 'header',
+      },
+      'JWT',
+    )
+    .addSecurityRequirements('JWT')
     .build();
 
-  const document = SwaggerModule.createDocument(app, swaggerConfig);
-  // The Swagger UI will be available at the '/api' endpoint
-  SwaggerModule.setup('api', app, document);
+  const document = SwaggerModule.createDocument(app, swaggerConfig, {
+    operationIdFactory: (controllerKey: string, methodKey: string) => methodKey,
+  });
+
+  SwaggerModule.setup('api', app, document, {
+    swaggerOptions: {
+      persistAuthorization: true,
+    },
+  });
 
   const config = app.get<ConfigService>(ConfigService);
   const port = config.get('zurich.port') || 3336;

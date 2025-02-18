@@ -1,73 +1,118 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Zurich Backend Billing Portal
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A NestJS-based backend service for managing billing records with authentication and role-based access control.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Project Structure
 
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Installation
-
-```bash
-$ yarn install
+```
+src/
+├── migrations/     # Database migration files
+└── modules/       # Application modules
+    ├── auth/      # Authentication module (JWT, Guards)
+    └── billing-record/  # Billing record management
 ```
 
-## Running the app
+## Quick Start
+
+1. Start the application using Docker:
 
 ```bash
-# development
-$ yarn run start
-
-# watch mode
-$ yarn run start:dev
-
-# production mode
-$ yarn run start:prod
+docker-compose up --build
 ```
 
-## Test
+This will:
+
+- Start the PostgreSQL database
+- Run database migrations automatically
+- Seed initial data into the database
+- Start the NestJS application
+- Start Adminer for database management
+
+## Development
+
+Run the application in development mode:
 
 ```bash
-# unit tests
-$ yarn run test
-
-# e2e tests
-$ yarn run test:e2e
-
-# test coverage
-$ yarn run test:cov
+yarn dev
 ```
 
-## Support
+### Database Management
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+#### Migration Commands
 
-## Stay in touch
+```bash
+# Generate a new migration
+yarn migration:generate
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+# Create a new empty migration
+yarn migration:create
 
-## License
+# Revert the last migration
+yarn migration:revert
+```
 
-Nest is [MIT licensed](LICENSE).
+## API Documentation
+
+Swagger documentation is available at: http://localhost:3337/api
+
+### Using the API with Authentication
+
+1. First, sign up using your Google email (this should match the ADMIN_EMAIL in .env)
+2. Call `/sign-in` endpoint to get an access token
+3. In the Swagger UI:
+   - Click the "Authorize" button at the top
+   - Enter your access token in the format: `Bearer your-token-here`
+   - Click "Authorize"
+
+Now you can access protected endpoints:
+
+- GET endpoints are open to all
+- CREATE, UPDATE, DELETE operations require ADMIN role
+
+## Admin Access
+
+Set your Google email in the .env file:
+
+```
+ADMIN_EMAIL=your.email@gmail.com
+```
+
+When you sign up with this email, you'll automatically get ADMIN role permissions.
+
+## Development Tools
+
+### Database Management
+
+Adminer is available at http://localhost:8081
+
+- System: PostgreSQL
+- Server: postgres
+- Username: postgres
+- Password: postgres
+- Database: zurich
+
+### API Documentation
+
+Swagger UI is available at http://localhost:3337/api
+
+- Complete API documentation
+- Interactive endpoint testing
+- Authentication support
+
+## Authentication Flow
+
+1. Sign up with your Google email (matching ADMIN_EMAIL)
+2. Get access token from /sign-in
+3. Use token for authenticated requests:
+   - Headers: `Authorization: Bearer your-token-here`
+   - Swagger: Use the Authorize button
+
+## Protected Operations
+
+The following operations require ADMIN role:
+
+- CREATE new billing records
+- UPDATE existing records
+- DELETE records
+
+All GET operations are publicly accessible.

@@ -1,0 +1,229 @@
+openapi: 3.0.0
+info:
+  title: Zurich Billing Portal API
+  description: API documentation for the Zurich Billing Portal
+  version: 1.0.0
+  contact:
+    name: Zurich Development Team
+
+servers:
+  - url: http://localhost:3000
+    description: Local Development Server
+  - url: https://api.zurich-billing.com
+    description: Production Server
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    BillingRecord:
+      type: object
+      properties:
+        productId:
+          type: string
+          description: Unique product code identifier
+          example: "PROD123"
+        location:
+          type: string
+          description: Location of the billing record
+          example: "Singapore"
+        premiumPaidAmount:
+          type: number
+          format: float
+          description: Amount of premium paid
+          example: 1500.50
+        email:
+          type: string
+          format: email
+          description: Customer email address
+          example: "customer@example.com"
+        firstName:
+          type: string
+          description: Customer first name
+          example: "John"
+        lastName:
+          type: string
+          description: Customer last name
+          example: "Doe"
+        photo:
+          type: string
+          description: URL or path to customer photo
+          example: "profile.jpg"
+      required:
+        - productId
+        - location
+        - premiumPaidAmount
+
+    BillingRecordCreate:
+      type: object
+      properties:
+        productCode:
+          type: string
+          description: Product code for the billing record
+          example: "PROD123"
+        location:
+          type: string
+          description: Location of the billing record
+          example: "Singapore"
+        premiumPaid:
+          type: number
+          format: float
+          description: Amount of premium paid
+          example: 1500.50
+      required:
+        - productCode
+        - location
+        - premiumPaid
+
+    BillingRecordUpdate:
+      type: object
+      properties:
+        location:
+          type: string
+          description: Updated location
+          example: "Malaysia"
+        premiumPaid:
+          type: number
+          format: float
+          description: Updated premium amount
+          example: 2000.75
+      required:
+        - location
+        - premiumPaid
+
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Error message
+        statusCode:
+          type: integer
+          description: HTTP status code
+
+security:
+  - BearerAuth: []
+
+paths:
+  /billing-records:
+    get:
+      summary: Get all billing records
+      description: Retrieve a list of billing records with optional filtering
+      parameters:
+        - in: query
+          name: productCode
+          schema:
+            type: string
+          description: Filter by product code
+        - in: query
+          name: location
+          schema:
+            type: string
+          description: Filter by location (case-insensitive, partial match)
+      responses:
+        '200':
+          description: List of billing records
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BillingRecord'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    post:
+      summary: Create a new billing record
+      description: Create a new billing record with the provided details
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BillingRecordCreate'
+      responses:
+        '201':
+          description: Billing record created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillingRecord'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /billing-records/{productCode}:
+    parameters:
+      - in: path
+        name: productCode
+        required: true
+        schema:
+          type: string
+        description: Product code of the billing record
+    
+    put:
+      summary: Update a billing record
+      description: Update an existing billing record by its product code
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BillingRecordUpdate'
+      responses:
+        '200':
+          description: Billing record updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillingRecord'
+        '404':
+          description: Billing record not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      summary: Delete a billing record
+      description: Delete an existing billing record by its product code
+      responses:
+        '200':
+          description: Billing record deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Billing record deleted successfully"
+        '404':
+          description: Billing record not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'

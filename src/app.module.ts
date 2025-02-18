@@ -3,6 +3,8 @@ import { ConfigService } from '@nestjs/config';
 import { CoreConfigModule, ConfigEnvironmentType as ENV } from './config';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { BillingRecordModule } from './modules/billing-record/billing-record.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -38,6 +40,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         };
       },
     }),
+    BillingRecordModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],

@@ -22,8 +22,10 @@ export type ConfigEnvironmentType = {
     privateKey: string;
     refreshPublicKey: string;
     refreshPrivateKey: string;
-    tokenExpiration: string | number;
     refreshTokenExpiration: string | number;
+
+    secret: string;
+    tokenExpiration: string | number;
   };
 
   // jwt
