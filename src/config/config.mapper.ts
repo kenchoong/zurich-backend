@@ -26,9 +26,11 @@ export const configuration = (): ConfigEnvironmentType => ({
     refreshPrivateKey: (
       process.env['ADMIN_JWT_REFRESH_PRIVATE_KEY'] ?? ''
     ).replace(/\\n/g, '\n'),
-    tokenExpiration: process.env['JWT_EXPIRATION_TIME'] ?? '30d',
     refreshTokenExpiration:
       process.env['JWT_REFRESH_EXPIRATION_TIME'] ?? '180d',
+
+    secret: process.env['JWT_SECRET'] ?? 'your-256-bit-secret',
+    tokenExpiration: process.env['JWT_EXPIRATION_TIME'] ?? '30d',
   },
 
   // jwt

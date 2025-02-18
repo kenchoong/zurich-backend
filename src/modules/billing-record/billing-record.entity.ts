@@ -1,18 +1,18 @@
 import { AbstractEntity } from 'nestjs-dev-utilities';
 import { Entity, Column } from 'typeorm';
 
-@Entity({ name: 'billing' })
-export class BillingEntity extends AbstractEntity {
-  @Column()
+@Entity({ name: 'billing_record' })
+export class BillingRecordEntity extends AbstractEntity {
+  @Column({ nullable: true })
   email: string;
 
-  @Column()
+  @Column({ nullable: true })
   firstName: string;
 
-  @Column()
+  @Column({ nullable: true })
   lastName: string;
 
-  @Column()
+  @Column({ nullable: true })
   photo: string;
 
   @Column()

@@ -1,8 +1,8 @@
 import { Seeder } from '@jorgebodega/typeorm-seeding';
-import { BillingEntity } from '../modules/billing/billing.entity';
+import { BillingRecordEntity } from '../modules/billing-record/billing-record.entity';
 import { DataSource } from 'typeorm';
 
-export default class BillingSeeder extends Seeder {
+export default class BillingRecordSeeder extends Seeder {
   async run(dataSource: DataSource): Promise<void> {
     const data = [
       {
@@ -12,7 +12,7 @@ export default class BillingSeeder extends Seeder {
         photo: 'https://reqres.in/img/faces/1-image.jpg',
         productId: '3000',
         location: 'West Malaysia',
-        premiumPaidAmount: 44.32,
+        premiumPaidAmount: 4432,
       },
       {
         email: 'janet.weaver@gmail.com',
@@ -21,7 +21,7 @@ export default class BillingSeeder extends Seeder {
         photo: 'https://reqres.in/img/faces/2-image.jpg',
         productId: '4000',
         location: 'East Malaysia',
-        premiumPaidAmount: 12.99,
+        premiumPaidAmount: 1299,
       },
       {
         email: 'emma.wong@mailsaur.net',
@@ -30,7 +30,7 @@ export default class BillingSeeder extends Seeder {
         photo: 'https://reqres.in/img/faces/3-image.jpg',
         productId: '5000',
         location: 'West Malaysia',
-        premiumPaidAmount: 49.1,
+        premiumPaidAmount: 4910,
       },
       {
         email: 'eve.holt@googlemail.co.com',
@@ -39,7 +39,7 @@ export default class BillingSeeder extends Seeder {
         photo: 'https://reqres.in/img/faces/4-image.jpg',
         productId: '3000',
         location: 'East Malaysia',
-        premiumPaidAmount: 21.99,
+        premiumPaidAmount: 2199,
       },
       {
         email: 'charles.morris@grbamart.co.my',
@@ -48,86 +48,74 @@ export default class BillingSeeder extends Seeder {
         photo: 'https://reqres.in/img/faces/5-image.jpg',
         productId: '4000',
         location: 'West Malaysia',
-        premiumPaidAmount: 44.99,
+        premiumPaidAmount: 4499,
       },
       {
-        email: 'tracey.ramos@esria.org',
+        email: 'tracey.ramos@mailinator.co.my',
         firstName: 'Tracey',
         lastName: 'Ramos',
         photo: 'https://reqres.in/img/faces/6-image.jpg',
         productId: '5000',
         location: 'East Malaysia',
-        premiumPaidAmount: 32.5,
+        premiumPaidAmount: 3399,
       },
       {
-        email: 'michael.jackson@sony.com',
+        email: 'michael.lawson@gmail.co.my',
         firstName: 'Michael',
-        lastName: 'Jackson',
+        lastName: 'Lawson',
         photo: 'https://reqres.in/img/faces/7-image.jpg',
         productId: '3000',
         location: 'West Malaysia',
-        premiumPaidAmount: 31.0,
+        premiumPaidAmount: 5599,
       },
       {
-        email: 'gwendolyn.fyn@live.com',
-        firstName: 'Gwendolyn',
-        lastName: 'Fyn',
+        email: 'lindsay.ferguson@mailinator.co.my',
+        firstName: 'Lindsay',
+        lastName: 'Ferguson',
         photo: 'https://reqres.in/img/faces/8-image.jpg',
         productId: '4000',
         location: 'East Malaysia',
-        premiumPaidAmount: 52.65,
+        premiumPaidAmount: 6699,
       },
       {
-        email: 'tobias.funke@docomo.co.jp',
+        email: 'tobias.funke@gmail.co.my',
         firstName: 'Tobias',
         lastName: 'Funke',
         photo: 'https://reqres.in/img/faces/9-image.jpg',
-        productId: '3000',
+        productId: '5000',
         location: 'West Malaysia',
-        premiumPaidAmount: 19.22,
+        premiumPaidAmount: 7799,
       },
       {
-        email: 'byron.fields@googlemail.co.uk',
+        email: 'byron.fields@mailinator.co.my',
         firstName: 'Byron',
         lastName: 'Fields',
         photo: 'https://reqres.in/img/faces/10-image.jpg',
-        productId: '4000',
-        location: 'East Malaysia',
-        premiumPaidAmount: 33.0,
-      },
-      {
-        email: 'edwards.wild@rocketmail.com',
-        firstName: 'Edwards',
-        lastName: 'Wild',
-        photo: 'https://reqres.in/img/faces/11-image.jpg',
         productId: '3000',
-        location: 'West Malaysia',
-        premiumPaidAmount: 15.0,
+        location: 'East Malaysia',
+        premiumPaidAmount: 8899,
       },
       {
-        email: 'rachel.winters@aol.com',
+        email: 'george.edwards@gmail.co.my',
+        firstName: 'George',
+        lastName: 'Edwards',
+        photo: 'https://reqres.in/img/faces/11-image.jpg',
+        productId: '4000',
+        location: 'West Malaysia',
+        premiumPaidAmount: 9999,
+      },
+      {
+        email: 'rachel.howell@mailinator.co.my',
         firstName: 'Rachel',
-        lastName: 'Winters',
+        lastName: 'Howell',
         photo: 'https://reqres.in/img/faces/12-image.jpg',
         productId: '5000',
         location: 'East Malaysia',
-        premiumPaidAmount: 60.99,
+        premiumPaidAmount: 11199,
       },
     ];
 
-    const billingRecords = data.map(async (value) => {
-      const billing = new BillingEntity();
-      billing.email = value.email;
-      billing.firstName = value.firstName;
-      billing.lastName = value.lastName;
-      billing.photo = value.photo;
-      billing.productId = value.productId;
-      billing.location = value.location;
-      billing.premiumPaidAmount = value.premiumPaidAmount * 100;
-      return billing;
-    });
-
-    const billingEntities = await Promise.all(billingRecords);
-    await dataSource.createEntityManager().save(BillingEntity, billingEntities);
+    const repository = dataSource.getRepository(BillingRecordEntity);
+    await repository.save(data);
   }
 }
