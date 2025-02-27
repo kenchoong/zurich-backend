@@ -36,6 +36,23 @@ Run the application in development mode:
 yarn dev
 ```
 
+## Unit Testing with Coverage
+
+Run unit tests with code coverage reporting:
+
+```bash
+yarn test:cov
+```
+
+This will:
+
+- Execute all unit tests in the project
+- Generate a coverage report showing which parts of the code are covered by tests
+- Output a summary of coverage percentages by file
+- Create a detailed HTML report in the `./coverage` directory that you can view in your browser
+
+To view the detailed HTML coverage report, open `./coverage/lcov-report/index.html` in your web browser.
+
 ### Database Management
 
 #### Migration Commands

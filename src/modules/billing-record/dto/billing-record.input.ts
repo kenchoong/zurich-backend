@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsNumber } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class BillingRecordCreateDto {
   @ApiProperty({
@@ -17,10 +18,12 @@ export class BillingRecordCreateDto {
   location: string;
 
   @ApiProperty({
-    description: 'Premium paid amount',
-    example: 0,
+    description:
+      'Premium paid amount (can be decimal, will be stored as integer)',
+    example: 10.5,
   })
   @IsNumber()
+  @Type(() => Number)
   premiumPaidAmount: number;
 
   @ApiProperty({
@@ -61,10 +64,12 @@ export class BillingRecordUpdateBodyDto {
   location: string;
 
   @ApiProperty({
-    description: 'Updated premium paid amount',
-    example: 0,
+    description:
+      'Updated premium paid amount (can be decimal, will be stored as integer)',
+    example: 10.5,
   })
   @IsNumber()
+  @Type(() => Number)
   premiumPaidAmount: number;
 
   @ApiProperty({

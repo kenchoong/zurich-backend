@@ -8,7 +8,6 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { CommandBus } from '@nestjs/cqrs';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -25,12 +24,13 @@ import {
   BillingRecordUpdateBodyDto,
 } from './dto/billing-record.input';
 import { AdminAuthJwtGuard } from '../auth/guards/admin.guard';
-import { RolesGuard } from '../auth/guards/roles.guard';
+import { CommandBus } from '@nestjs/cqrs';
 import { Roles } from '../auth/decorators/roles.decorator';
+import { RolesGuard } from '../auth/guards/roles.guard';
 
 @ApiTags('Billing Records')
 @ApiBearerAuth('JWT')
-@Controller('billing-records')
+@Controller('billing')
 export class BillingRecordController {
   constructor(
     private readonly commandBus: CommandBus,
@@ -176,6 +176,10 @@ export class BillingRecordController {
     },
   })
   createBillingRecord(@Body() createDto: BillingRecordCreateDto) {
+    // Ensure premiumPaidAmount is a number before passing to service
+    if (createDto.premiumPaidAmount !== undefined) {
+      createDto.premiumPaidAmount = Number(createDto.premiumPaidAmount);
+    }
     return this.service.create(createDto);
   }
 
@@ -262,6 +266,10 @@ export class BillingRecordController {
     @Query() query: BillingRecordUpdateQueryDto,
     @Body() body: BillingRecordUpdateBodyDto,
   ) {
+    // Ensure premiumPaidAmount is a number before passing to service
+    if (body.premiumPaidAmount !== undefined) {
+      body.premiumPaidAmount = Number(body.premiumPaidAmount);
+    }
     return this.service.update(query.id, body);
   }
 
