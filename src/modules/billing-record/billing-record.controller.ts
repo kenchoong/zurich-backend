@@ -8,7 +8,6 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { CommandBus } from '@nestjs/cqrs';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -25,12 +24,13 @@ import {
   BillingRecordUpdateBodyDto,
 } from './dto/billing-record.input';
 import { AdminAuthJwtGuard } from '../auth/guards/admin.guard';
-import { RolesGuard } from '../auth/guards/roles.guard';
+import { CommandBus } from '@nestjs/cqrs';
 import { Roles } from '../auth/decorators/roles.decorator';
+import { RolesGuard } from '../auth/guards/roles.guard';
 
 @ApiTags('Billing Records')
 @ApiBearerAuth('JWT')
-@Controller('billing-records')
+@Controller('billing')
 export class BillingRecordController {
   constructor(
     private readonly commandBus: CommandBus,
