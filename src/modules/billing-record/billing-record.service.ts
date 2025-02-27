@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { InjectQueryService, QueryService } from '@ptc-org/nestjs-query-core';
 import { Repository } from 'typeorm';
@@ -46,36 +50,71 @@ export class BillingRecordService {
 
   async create(createDto: BillingRecordCreateDto) {
     console.log(createDto);
-    const billing = this.repo.create({
-      productId: createDto.productId,
-      location: createDto.location,
-      premiumPaidAmount: Math.round(createDto.premiumPaidAmount * 100), // Convert decimal to integer by multiplying by 100
-      email: createDto.email,
-      firstName: createDto.firstName,
-      lastName: createDto.lastName,
-      photo: createDto.photo,
-    });
+    try {
+      // Ensure premiumPaidAmount is a valid number
+      if (isNaN(createDto.premiumPaidAmount)) {
+        throw new BadRequestException(
+          'premiumPaidAmount must be a valid number',
+        );
+      }
 
-    return this.repo.save(billing);
+      const billing = this.repo.create({
+        productId: createDto.productId,
+        location: createDto.location,
+        premiumPaidAmount: Math.round(createDto.premiumPaidAmount * 100), // Convert decimal to integer by multiplying by 100
+        email: createDto.email,
+        firstName: createDto.firstName,
+        lastName: createDto.lastName,
+        photo: createDto.photo,
+      });
+
+      return this.repo.save(billing);
+    } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      throw new BadRequestException(
+        `Error creating billing record: ${error.message}`,
+      );
+    }
   }
 
   async update(id: number, body: BillingRecordUpdateBodyDto) {
-    const billing = await this.repo.findOne({
-      where: { id: id },
-    });
+    try {
+      const billing = await this.repo.findOne({
+        where: { id: id },
+      });
 
-    if (!billing) {
-      throw new NotFoundException(`Billing record with id ${id} not found`);
+      if (!billing) {
+        throw new NotFoundException(`Billing record with id ${id} not found`);
+      }
+
+      // Ensure premiumPaidAmount is a valid number
+      if (isNaN(body.premiumPaidAmount)) {
+        throw new BadRequestException(
+          'premiumPaidAmount must be a valid number',
+        );
+      }
+
+      billing.location = body.location;
+      billing.premiumPaidAmount = Math.round(body.premiumPaidAmount * 100); // Convert decimal to integer by multiplying by 100
+      billing.email = body.email;
+      billing.firstName = body.firstName;
+      billing.lastName = body.lastName;
+      billing.photo = body.photo;
+
+      return this.repo.save(billing);
+    } catch (error) {
+      if (
+        error instanceof NotFoundException ||
+        error instanceof BadRequestException
+      ) {
+        throw error;
+      }
+      throw new BadRequestException(
+        `Error updating billing record: ${error.message}`,
+      );
     }
-
-    billing.location = body.location;
-    billing.premiumPaidAmount = Math.round(body.premiumPaidAmount * 100); // Convert decimal to integer by multiplying by 100
-    billing.email = body.email;
-    billing.firstName = body.firstName;
-    billing.lastName = body.lastName;
-    billing.photo = body.photo;
-
-    return this.repo.save(billing);
   }
 
   async delete(id: number) {

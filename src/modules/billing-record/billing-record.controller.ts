@@ -176,6 +176,10 @@ export class BillingRecordController {
     },
   })
   createBillingRecord(@Body() createDto: BillingRecordCreateDto) {
+    // Ensure premiumPaidAmount is a number before passing to service
+    if (createDto.premiumPaidAmount !== undefined) {
+      createDto.premiumPaidAmount = Number(createDto.premiumPaidAmount);
+    }
     return this.service.create(createDto);
   }
 
@@ -262,6 +266,10 @@ export class BillingRecordController {
     @Query() query: BillingRecordUpdateQueryDto,
     @Body() body: BillingRecordUpdateBodyDto,
   ) {
+    // Ensure premiumPaidAmount is a number before passing to service
+    if (body.premiumPaidAmount !== undefined) {
+      body.premiumPaidAmount = Number(body.premiumPaidAmount);
+    }
     return this.service.update(query.id, body);
   }
 
